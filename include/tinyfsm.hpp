@@ -38,9 +38,8 @@
 #ifndef TINYFSM_HPP_INCLUDED
 #define TINYFSM_HPP_INCLUDED
 
-#ifndef TINYFSM_NOSTDLIB
 #include <type_traits>
-#endif
+#include <utility>
 
 // #include <iostream>
 // #define DBG(str) do { std::cerr << str << std::endl; } while( false )
@@ -54,19 +53,9 @@ namespace tinyfsm
   struct Event { };
 
   // --------------------------------------------------------------------------
-
-#ifdef TINYFSM_NOSTDLIB
-  // remove dependency on standard library (silent fail!).
-  // useful in conjunction with -nostdlib option, e.g. if your compiler
-  // does not provide a standard library.
-  // NOTE: this silently disables all static_assert() calls below!
-  template<typename F, typename S>
-  struct is_same_fsm { static constexpr bool value = true; };
-#else
   // check if both fsm and state class share same fsmtype
   template<typename F, typename S>
   struct is_same_fsm : std::is_same< typename F::fsmtype, typename S::fsmtype > { };
-#endif
 
   template<typename S>
   struct _state_instance
@@ -110,7 +99,12 @@ namespace tinyfsm
     // explicitely specialized in FSM_INITIAL_STATE macro
     static void set_initial_state();
 
-    static void reset() { };
+    static void reset() { }
+
+    template<typename S>
+    static void init(S&& initialized_state) {
+      _state_instance<S>::value = initialized_state;
+    }
 
     static void enter() {
       current_state_ptr->entry();
