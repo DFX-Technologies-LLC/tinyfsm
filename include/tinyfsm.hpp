@@ -102,7 +102,7 @@ namespace tinyfsm
 
     template<typename S>
     static void init(S&& initialized_state) {
-      _state_instance<S>::value = initialized_state;
+      _state_instance<S>::value = std::move(initialized_state);
     }
 
     static void enter() {
