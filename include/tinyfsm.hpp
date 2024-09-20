@@ -39,7 +39,6 @@
 #define TINYFSM_HPP_INCLUDED
 
 #include <type_traits>
-#include <utility>
 
 // #include <iostream>
 // #define DBG(str) do { std::cerr << str << std::endl; } while( false )
